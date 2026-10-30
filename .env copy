@@ -1,0 +1,14 @@
+PORT=3000
+NODE_ENV=development
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=api
+DB_PASSWORD=secret
+DB_NAME=express_api
+
+# Wajib, minimal 32 karakter. Generate:
+# node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
+JWT_SECRET=
+JWT_EXPIRES_IN=1h
+AUTH_RATE_LIMIT_MAX=10
