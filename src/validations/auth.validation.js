@@ -16,7 +16,7 @@ export const registerSchema = z.object({
     .trim()
     .toLowerCase()
     .email('Format email tidak valid')
-    .max(150),
+    .max(50),
   password,
 });
 

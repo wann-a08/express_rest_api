@@ -17,7 +17,7 @@ const signToken = (account) =>
 
 const findPublicById = async (id) => {
   const [rows] = await pool.query(
-    'SELECT id, username, email, created_at, updated_at FROM accounts  WHERE id = ?',
+    'SELECT id, username, email, created_at, updated_at FROM users WHERE id = ?',
     [id],
   );
   return rows[0];
@@ -32,7 +32,7 @@ export const authService = {
     const hash = await bcrypt.hash(password, ROUNDS);
     try {
       const [result] = await pool.query(
-        'INSERT INTO accounts (username, email, password) VALUES (?, ?, ?)',
+        'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
         [username, email, hash],
       );
       return findPublicById(result.insertId);
@@ -52,7 +52,7 @@ export const authService = {
     // mengandung '@', jadi identifier pasti merujuk ke tepat satu kolom.
     const column = identifier.includes('@') ? 'email' : 'username'; // konstanta, bukan input user
     const [rows] = await pool.query(
-      `SELECT id, username, email, password, created_at, updated_at FROM accounts WHERE ${column} = ?`,
+      `SELECT id, username, email, password, created_at, updated_at FROM users WHERE ${column} = ?`,
       [identifier],
     );
     const account = rows[0];

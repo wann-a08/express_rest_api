@@ -1,13 +1,14 @@
 # Express REST API
 
-REST API dengan Express 5, MySQL (`mysql2`), validasi `zod`, dan error handling terpusat.
+REST API dengan Express 5, MySQL (`mysql2`, database `db_swaswan`), validasi `zod`, dan error handling terpusat.
 
 ## Setup
 
 ```bash
 npm install
 cp .env.example .env        # isi kredensial DB dan JWT_SECRET (lihat komentar di file)
-mysql -u root -p < sql/schema.sql
+mysql -u root -p < sql/schema.sql   # buat db_swaswan (data_siswa, users)
+# DB db_swaswan yang sudah ada dari dump lama: jalankan sql/migrations/003_add_unique_keys.sql sekali
 npm run dev                 # development, auto-restart via nodemon (atau: npm start untuk production)
 ```
 
@@ -29,11 +30,11 @@ src/
 | Method | URL               | Keterangan                                   |
 |--------|-------------------|----------------------------------------------|
 | GET    | /api/health       | Health check                                 |
-| GET    | /api/users        | List (`?page=1&limit=10&search=kata`)        |
-| GET    | /api/users/:id    | Detail                                       |
-| POST   | /api/users        | Buat user `{ "name", "email" }`              |
-| PUT    | /api/users/:id    | Update parsial (`name` dan/atau `email`)     |
-| DELETE | /api/users/:id    | Hapus (204)                                  |
+| GET    | /api/siswa        | List (`?page=1&limit=10&search=nama/nipd&kelas=10&jurusan=RPL&jenis_kelamin=L`) |
+| GET    | /api/siswa/:id    | Detail                                       |
+| POST   | /api/siswa        | Buat `{ "nipd", "nama_lengkap", "jenis_kelamin", "kelas", "jurusan", "alamat"? }` |
+| PUT    | /api/siswa/:id    | Update parsial (field di atas, minimal satu) |
+| DELETE | /api/siswa/:id    | Hapus (204)                                  |
 | POST   | /api/auth/register | Buat akun `{ "username", "email", "password" }` |
 | POST   | /api/auth/login   | Login `{ "identifier", "password" }`, balikin JWT |
 | GET    | /api/auth/me      | Profil akun login (butuh Bearer token)       |
@@ -48,8 +49,7 @@ lalu daftarkan di `src/routes/index.js`.
 
 ## Autentikasi (JWT)
 
-- Tabel `accounts`: `id`, `username`, `email`, `password` (hash bcrypt), `created_at`, `updated_at`.
-- DB lama yang sudah punya `accounts`: jalankan `sql/migrations/002_add_email_to_accounts.sql` sekali.
+- Tabel `users`: `id`, `username`, `email`, `password` (hash bcrypt), `created_at`, `updated_at`.
 - Login: `POST /api/auth/login` dengan `{ "identifier", "password" }` -> `data.token`.
   `identifier` boleh username atau email (field `username` lama tetap diterima sebagai alias).
 - Kirim token di header `Authorization: Bearer <token>`.
